@@ -15,7 +15,7 @@ export async function renderHome(root, S) {
   root.append(h('div', { class: 'detail-head' },
     h('div', null,
       h('h1', null, '글로벌 주식시장 전망'),
-      h('p', { class: 'sub' }, `${S.asOf} 종가 기준 · 지수 ${idx.length}개 · 종목 ${stocks.length}개 · 9개 요인 + 블랙스완 위험 분석`)),
+      h('p', { class: 'sub' }, `${S.asOf} 기준 (시장별 최신 거래일) · 지수 ${idx.length}개 · 종목 ${stocks.length}개 · 9개 요인 + 블랙스완 위험 분석`)),
     h('a', { class: 'btn', href: '#/reports' }, '분석 리포트 보기 →')));
 
   // KPI

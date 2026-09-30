@@ -46,6 +46,12 @@ export function mergeByDate(rows) {
   return [...m.values()].sort((a, b) => a.date.localeCompare(b.date));
 }
 
+// 두 시점 모두에 있는 같은 필드끼리만 비교 (예: 기말 발행주식 수 vs 가중평균 주식 수 혼용 방지)
+export function sameFieldGrowth(a, b, fields) {
+  for (const f of fields) if (isNum(a?.[f]) && isNum(b?.[f]) && b[f] !== 0) return a[f] / b[f] - 1;
+  return null;
+}
+
 export const growth = (a, b) => (isNum(a) && isNum(b) && b !== 0 ? (b > 0 ? a / b - 1 : (a - b) / Math.abs(b)) : null);
 export const ratio = (a, b) => (isNum(a) && isNum(b) && b !== 0 ? a / b : null);
 export const quarterLabel = d => { const x = new Date(d); return `${x.getUTCFullYear()}년 ${Math.floor(x.getUTCMonth() / 3) + 1}분기`; };

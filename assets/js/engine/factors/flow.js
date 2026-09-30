@@ -1,5 +1,5 @@
 // 5. 수급: 투자자별 매매(한국: 외국인·기관·개인), 기관 동향, 공매도, 과열(신용) 프록시, 대량 매물·락업, 지수 편입, 가격-거래량 수급
-import { makeFactor } from './base.js';
+import { makeFactor, sameFieldGrowth } from './base.js';
 import { isNum, lin, soft, linreg } from '../stats.js';
 import { pct, spct, pp, fixed, big, num } from '../format.js';
 
@@ -65,11 +65,10 @@ export function flow(A, ctx, ev) {
     const toLock = 180 - ageDays;
     O.add('상장 후 경과일 · 보호예수 해제', `${Math.round(ageDays)}일`, Math.abs(toLock) < 30 ? -0.7 : toLock > 0 ? -0.3 : 0, toLock > 0 ? `약 ${Math.round(toLock)}일 후 180일 보호예수 해제 예상` : '보호예수 해제 직후 물량 부담');
   } else O.info('상장 경과', isNum(ageDays) ? `${Math.round(ageDays / 365)}년` : '—', '신규상장 락업 이슈 없음');
-  const qs = (A.raw.fts?.quarterly || []).filter(r => isNum(r.ordinarySharesNumber ?? r.dilutedAverageShares));
+  const qs = A.raw.fts?.quarterly || [];
   if (qs.length >= 4) {
-    const a = qs[qs.length - 1], b = qs[Math.max(0, qs.length - 5)];
-    const d = (a.ordinarySharesNumber ?? a.dilutedAverageShares) / (b.ordinarySharesNumber ?? b.dilutedAverageShares) - 1;
-    O.add('주식 수 변화 (최근 1년, 분기)', spct(d, 2), lin(d, 0.05, -0.02), '증가 = 증자·전환 등 희석');
+    const d = sameFieldGrowth(qs[qs.length - 1], qs[Math.max(0, qs.length - 5)], ['ordinarySharesNumber', 'shareIssued', 'dilutedAverageShares']);
+    if (isNum(d)) O.add('주식 수 변화 (최근 1년, 분기)', spct(d, 2), lin(d, 0.05, -0.02), '증가 = 증자·전환 등 희석');
   }
   const off = ev.offering?.length || 0;
   O.add('증자·블록딜·전환사채 뉴스 (30일)', `${off}건`, off ? -soft(off, 1.5) : 0.1, '');

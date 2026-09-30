@@ -127,10 +127,16 @@ export const FRED_SERIES = {
 };
 
 // 예정된 거시·정치 이벤트 (필요 시 직접 수정)
+// (출처: 각 중앙은행 공시 일정, 2026-09-30 확인)
 export const SCHEDULED_EVENTS = [
+  { date: '2026-10-22', title: '한국은행 기준금리 결정', type: 'macro', impact: 'high' },
   { date: '2026-10-28', title: '미국 FOMC 금리 결정', type: 'macro', impact: 'high' },
+  { date: '2026-10-29', title: 'ECB 통화정책 결정', type: 'macro', impact: 'medium' },
+  { date: '2026-10-30', title: '일본은행 금융정책 결정', type: 'macro', impact: 'medium' },
   { date: '2026-11-03', title: '미국 중간선거', type: 'political', impact: 'high' },
+  { date: '2026-11-18', title: 'APEC 정상회의(선전)·미중 정상회담', type: 'political', impact: 'medium' },
   { date: '2026-12-09', title: '미국 FOMC 금리 결정', type: 'macro', impact: 'high' },
+  { date: '2027-01-27', title: '미국 FOMC 금리 결정', type: 'macro', impact: 'high' },
 ];
 
 export const SIGNALS = [

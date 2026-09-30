@@ -226,8 +226,9 @@ function computeBlackSwan(ctx, S, F, L, FL) {
   const t3m = F('T10Y3M');
   if (t3m) {
     const v = t3m.c, now = v[v.length - 1], minY = Math.min(...v.slice(-260));
-    const s = now < 0 ? 0.6 + Math.min(0.4, -now / 2) : minY < 0 ? 0.5 : 0.1;
-    add('수익률 곡선', s, now < 0 ? '장단기 금리 역전 중' : minY < 0 ? '1년 내 역전 후 정상화(역사적으로 침체 직전 패턴)' : '정상 기울기', 0.8);
+    // 하루 이틀의 미미한 역전은 무시하고 −0.10%p 이하의 의미 있는 역전만 반영
+    const s = now < 0 ? 0.6 + Math.min(0.4, -now / 2) : minY <= -0.1 ? 0.5 : 0.1;
+    add('수익률 곡선', s, now < 0 ? '장단기 금리 역전 중' : minY <= -0.1 ? `1년 내 역전(최저 ${minY.toFixed(2)}%p) 후 정상화 — 역사적으로 침체 직전 패턴` : '정상 기울기', 0.8);
   }
   const ur = F('UNRATE');
   if (ur && ur.c.length > 15) {

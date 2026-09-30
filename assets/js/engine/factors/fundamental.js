@@ -1,5 +1,5 @@
 // 1. 기업 펀더멘털: 실적·밸류에이션·재무건전성·수익성·성장성·지배구조·경쟁우위
-import { makeFactor, mergeByDate, growth, ratio, quarterLabel } from './base.js';
+import { makeFactor, mergeByDate, growth, ratio, quarterLabel, sameFieldGrowth } from './base.js';
 import { isNum, lin, soft, median, std, clamp, idxAtOrBefore } from '../stats.js';
 import { SECTORS } from '../config.js';
 import { pct, spct, pp, times, fixed, big } from '../format.js';
@@ -158,8 +158,7 @@ export function fundamental(A, ctx) {
   const d12 = sumDiv(365, 0), d24 = sumDiv(730, 365);
   if (d12 > 0 || d24 > 0) Mg.add('배당 성장 (최근 12개월)', d24 > 0 ? spct(d12 / d24 - 1) : '신규 배당', d24 > 0 ? lin(d12 / d24 - 1, -0.15, 0.10) : 0.3, `배당수익률 ${pct(sd.dividendYield ?? sd.trailingAnnualDividendYield, 2)}`);
   if (isNum(sd.payoutRatio) && sd.payoutRatio > 0) Mg.add('배당성향', pct(sd.payoutRatio, 0), sd.payoutRatio > 1 ? -0.8 : sd.payoutRatio > 0.8 ? -0.3 : sd.payoutRatio >= 0.2 ? 0.3 : 0, '100% 초과 시 배당 지속성 의문', 0.5);
-  const sh0 = a0.ordinarySharesNumber ?? a0.dilutedAverageShares, sh1 = a1.ordinarySharesNumber ?? a1.dilutedAverageShares;
-  const dSh = growth(sh0, sh1);
+  const dSh = sameFieldGrowth(a0, a1, ['ordinarySharesNumber', 'shareIssued', 'dilutedAverageShares']);
   Mg.add('발행주식 수 변화 (전년 대비)', spct(dSh), lin(dSh, 0.04, -0.03), '감소 = 자사주 소각, 증가 = 희석', 0.8);
   const nsp = s.netSharePurchaseActivity;
   if (nsp && isNum(nsp.netPercentInsiderShares)) Mg.add('내부자 순매수 (6개월)', `${spct(nsp.netPercentInsiderShares, 2)} (매수 ${nsp.buyInfoCount ?? 0}건/매도 ${nsp.sellInfoCount ?? 0}건)`, lin(nsp.netPercentInsiderShares, -0.03, 0.01), '보유 주식 대비 순매수 비율');
@@ -221,8 +220,8 @@ function piotroski(a, b) {
   t(roaA > 0); t(a.operatingCashFlow > 0); t(roaA > roaB); t(a.operatingCashFlow / a.totalAssets > roaA);
   t(isNum(a.longTermDebt) && isNum(b.longTermDebt) ? a.longTermDebt / a.totalAssets <= b.longTermDebt / b.totalAssets : null);
   t(isNum(a.currentAssets) && isNum(a.currentLiabilities) && isNum(b.currentAssets) && isNum(b.currentLiabilities) ? a.currentAssets / a.currentLiabilities > b.currentAssets / b.currentLiabilities : null);
-  const shA = a.ordinarySharesNumber ?? a.dilutedAverageShares, shB = b.ordinarySharesNumber ?? b.dilutedAverageShares;
-  t(isNum(shA) && isNum(shB) ? shA <= shB * 1.005 : null);
+  const dSh = sameFieldGrowth(a, b, ['ordinarySharesNumber', 'shareIssued', 'dilutedAverageShares']);
+  t(isNum(dSh) ? dSh <= 0.005 : null);
   t(isNum(a.grossProfit) && isNum(b.grossProfit) ? a.grossProfit / a.totalRevenue > b.grossProfit / b.totalRevenue : null);
   t(a.totalRevenue / a.totalAssets > b.totalRevenue / b.totalAssets);
   if (n < 6) return { score: null, note: '항목 부족' };

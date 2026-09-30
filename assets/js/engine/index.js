@@ -171,6 +171,6 @@ export function summarize(res) {
     symbol: res.symbol, kind: res.kind, name: res.name, nameKo: res.nameKo, market: res.market, marketName: res.marketName, region: res.region,
     sector: res.sector, sectorKo: res.sectorKo, currency: res.currency, price: res.price, changes: res.changes, mcapUSD: res.mcapUSD, asOf: res.asOf,
     scores, conf, comp, sig, fc, signal: res.signal, spark: c.slice(-66).map(x => (isNum(x) ? +x.toPrecision(5) : null)),
-    vol: res.factors.quant.volSummary?.hv60 ?? null, nextEvent: res.events.upcoming[0] || null,
+    vol: res.factors.quant.volSummary?.hv60 ?? null, nextEvent: res.events.upcoming.find(e => e.type === 'earnings') || null,
   };
 }
