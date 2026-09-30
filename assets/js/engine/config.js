@@ -35,22 +35,23 @@ export const CRASH_MEAN = -0.15;           // 시장 붕괴 시 평균 하락률
 export const CRASH_SD = 0.06;
 export const MC_PATHS = 4000;
 
+// closeUtc: 정규장 마감 시각(UTC, 시간 단위). 서머타임 여부와 무관하게 늦은 쪽 기준
 export const MARKETS = {
-  US: { name: '미국', bench: '^GSPC', ccy: 'USD', fx: null, rf: 'US', rfFallback: 0.04 },
-  KR: { name: '한국', bench: '^KS11', ccy: 'KRW', fx: 'KRW=X', rf: 'IR3TIB01KRM156N', rfFallback: 0.025 },
-  JP: { name: '일본', bench: '^N225', ccy: 'JPY', fx: 'JPY=X', rf: 'IR3TIB01JPM156N', rfFallback: 0.005 },
-  CN: { name: '중국', bench: '000001.SS', ccy: 'CNY', fx: 'CNY=X', rf: 'IR3TIB01CNM156N', rfFallback: 0.015 },
-  HK: { name: '홍콩', bench: '^HSI', ccy: 'HKD', fx: 'HKD=X', rf: 'US', rfFallback: 0.04 },
-  TW: { name: '대만', bench: '^TWII', ccy: 'TWD', fx: 'TWD=X', rf: null, rfFallback: 0.015 },
-  IN: { name: '인도', bench: '^NSEI', ccy: 'INR', fx: 'INR=X', rf: 'IR3TIB01INM156N', rfFallback: 0.06 },
-  AU: { name: '호주', bench: '^AXJO', ccy: 'AUD', fx: 'AUD=X', rf: 'IR3TIB01AUM156N', rfFallback: 0.036 },
-  EU: { name: '유로존', bench: '^STOXX50E', ccy: 'EUR', fx: 'EUR=X', rf: 'IR3TIB01EZM156N', rfFallback: 0.02 },
-  DE: { name: '독일', bench: '^GDAXI', ccy: 'EUR', fx: 'EUR=X', rf: 'IR3TIB01EZM156N', rfFallback: 0.02 },
-  FR: { name: '프랑스', bench: '^FCHI', ccy: 'EUR', fx: 'EUR=X', rf: 'IR3TIB01EZM156N', rfFallback: 0.02 },
-  DK: { name: '덴마크', bench: '^STOXX50E', ccy: 'DKK', fx: 'DKK=X', rf: 'IR3TIB01DKM156N', rfFallback: 0.02 },
-  UK: { name: '영국', bench: '^FTSE', ccy: 'GBP', fx: 'GBP=X', rf: 'IR3TIB01GBM156N', rfFallback: 0.04 },
-  CA: { name: '캐나다', bench: '^GSPTSE', ccy: 'CAD', fx: 'CAD=X', rf: 'IR3TIB01CAM156N', rfFallback: 0.028 },
-  BR: { name: '브라질', bench: '^BVSP', ccy: 'BRL', fx: 'BRL=X', rf: 'IR3TIB01BRM156N', rfFallback: 0.12 },
+  US: { name: '미국', bench: '^GSPC', ccy: 'USD', fx: null, rf: 'US', rfFallback: 0.04, closeUtc: 21.1 },
+  KR: { name: '한국', bench: '^KS11', ccy: 'KRW', fx: 'KRW=X', rf: 'IR3TIB01KRM156N', rfFallback: 0.025, closeUtc: 6.7 },
+  JP: { name: '일본', bench: '^N225', ccy: 'JPY', fx: 'JPY=X', rf: 'IR3TIB01JPM156N', rfFallback: 0.005, closeUtc: 6.6 },
+  CN: { name: '중국', bench: '000001.SS', ccy: 'CNY', fx: 'CNY=X', rf: 'IR3TIB01CNM156N', rfFallback: 0.015, closeUtc: 7.1 },
+  HK: { name: '홍콩', bench: '^HSI', ccy: 'HKD', fx: 'HKD=X', rf: 'US', rfFallback: 0.04, closeUtc: 8.3 },
+  TW: { name: '대만', bench: '^TWII', ccy: 'TWD', fx: 'TWD=X', rf: null, rfFallback: 0.015, closeUtc: 5.6 },
+  IN: { name: '인도', bench: '^NSEI', ccy: 'INR', fx: 'INR=X', rf: 'IR3TIB01INM156N', rfFallback: 0.06, closeUtc: 10.1 },
+  AU: { name: '호주', bench: '^AXJO', ccy: 'AUD', fx: 'AUD=X', rf: 'IR3TIB01AUM156N', rfFallback: 0.036, closeUtc: 6.3 },
+  EU: { name: '유로존', bench: '^STOXX50E', ccy: 'EUR', fx: 'EUR=X', rf: 'IR3TIB01EZM156N', rfFallback: 0.02, closeUtc: 16.7 },
+  DE: { name: '독일', bench: '^GDAXI', ccy: 'EUR', fx: 'EUR=X', rf: 'IR3TIB01EZM156N', rfFallback: 0.02, closeUtc: 16.7 },
+  FR: { name: '프랑스', bench: '^FCHI', ccy: 'EUR', fx: 'EUR=X', rf: 'IR3TIB01EZM156N', rfFallback: 0.02, closeUtc: 16.7 },
+  DK: { name: '덴마크', bench: '^STOXX50E', ccy: 'DKK', fx: 'DKK=X', rf: 'IR3TIB01DKM156N', rfFallback: 0.02, closeUtc: 16.2 },
+  UK: { name: '영국', bench: '^FTSE', ccy: 'GBP', fx: 'GBP=X', rf: 'IR3TIB01GBM156N', rfFallback: 0.04, closeUtc: 16.7 },
+  CA: { name: '캐나다', bench: '^GSPTSE', ccy: 'CAD', fx: 'CAD=X', rf: 'IR3TIB01CAM156N', rfFallback: 0.028, closeUtc: 21.1 },
+  BR: { name: '브라질', bench: '^BVSP', ccy: 'BRL', fx: 'BRL=X', rf: 'IR3TIB01BRM156N', rfFallback: 0.12, closeUtc: 21.2 },
 };
 
 // Yahoo 섹터 → 미국 섹터 ETF(업종 밸류에이션·추세 벤치마크)

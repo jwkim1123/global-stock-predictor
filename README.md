@@ -20,7 +20,7 @@
 ## 작동 방식
 
 ```
-GitHub Actions (평일 1회, 약 2~3분)
+GitHub Actions (평일 2회: 한국시간 19:17 아시아 마감 후 · 07:17 미국 마감 후, 회당 약 1~2분)
   scripts/collect.mjs  → Yahoo Finance · FRED · 네이버 증권 수집 (캐시 재사용)
   scripts/build.mjs    → 분석 엔진 실행 → data/*.json 생성, 예측 기록 커밋
   → GitHub Pages 배포
@@ -75,4 +75,5 @@ node scripts/serve.mjs       # http://localhost:8080
 - Yahoo Finance(비공식 API, `yahoo-finance2`), FRED, 네이버 증권 모바일 API
 - 국내 공매도·신용잔고, 소셜미디어 언급량 등은 무료 공개 API가 없어 대리지표로 대체
 - 재무·뉴스 데이터는 현재 스냅샷뿐이라 백테스트는 가격·거시 기반 ML만 포함
-- 무료 티어 부담을 줄이기 위해 평일 하루 1회, 요청은 실행당 약 400건 이하
+- 실시간 시세가 아닌 하루 2회 갱신. 무료 티어 부담을 줄이기 위해 요청은 실행당 약 400건 이하이며 같은 날 재실행 시 캐시를 재사용
+- 바로 갱신하려면 Actions 탭의 "Run workflow" 또는 `gh workflow run update.yml`

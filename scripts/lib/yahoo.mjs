@@ -22,6 +22,17 @@ export async function chart(symbol, period1, { full = true } = {}) {
     rows.set(day, q); // 같은 날짜가 중복되면 마지막 값 유지
   }
   const days = [...rows.keys()].sort((a, b) => a - b);
+  // Yahoo 일봉에 최신 거래일이 아직 비어 있으면(종가 null) 시세 메타데이터로 보충
+  const m0 = r.meta || {};
+  if (m0.regularMarketTime && Number.isFinite(m0.regularMarketPrice) && days.length) {
+    const mDay = Math.floor((new Date(m0.regularMarketTime).getTime() + off) / DAY_MS);
+    const lastDay = days[days.length - 1];
+    if (mDay > lastDay && mDay - lastDay <= 7) {
+      const prev = rows.get(lastDay), px = m0.regularMarketPrice;
+      rows.set(mDay, { close: px, adjclose: px, open: prev.close, high: Math.max(px, m0.regularMarketDayHigh ?? px), low: Math.min(px, m0.regularMarketDayLow ?? px), volume: m0.regularMarketVolume ?? 0 });
+      days.push(mDay);
+    }
+  }
   const p = { t: [], c: [], ac: [] };
   if (full) Object.assign(p, { o: [], h: [], l: [], v: [] });
   for (const d of days) {

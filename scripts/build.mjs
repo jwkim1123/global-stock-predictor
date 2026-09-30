@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildContext, analyzeAsset, summarize, attachUniverse } from '../assets/js/engine/index.js';
-import { HORIZONS, fileKey, FACTORS, WEIGHTS, HORIZON_LABELS } from '../assets/js/engine/config.js';
+import { HORIZONS, fileKey, FACTORS, WEIGHTS, HORIZON_LABELS, MARKETS } from '../assets/js/engine/config.js';
 import { spearman, mean, idxAtOrBefore, isNum } from '../assets/js/engine/stats.js';
 import { readJSON, writeJSON, ensureDir, log } from './lib/util.mjs';
 
@@ -53,8 +53,12 @@ function appendLog() {
   const header = 'date,symbol,horizon,price,exp,q05,q50,q95,pUp,score';
   const existing = fs.existsSync(LOG_FILE) ? fs.readFileSync(LOG_FILE, 'utf8').trim().split('\n') : [header];
   const keys = new Set(existing.slice(1).map(l => l.split(',').slice(0, 3).join(',')));
+  // 아직 장이 열려 있는 시장(예: 한국시간 19시 실행 때의 유럽)은 종가가 아니므로 기록하지 않음
+  const now = new Date(), todayUtc = now.toISOString().slice(0, 10), nowH = now.getUTCHours() + now.getUTCMinutes() / 60;
+  const intraday = r => r.asOf === todayUtc && nowH < (MARKETS[r.market]?.closeUtc ?? 21.1);
   const add = [];
   for (const r of rows) for (const h of LOG_H) {
+    if (intraday(r)) continue;
     const k = `${r.asOf},${r.symbol},${h}`, f = r.fc[h];
     if (!f || keys.has(k)) continue;
     add.push([r.asOf, r.symbol, h, r.price, f.exp, f.q05, f.med, f.q95, f.pUp, r.comp[h]].join(','));

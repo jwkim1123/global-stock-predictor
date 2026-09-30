@@ -1,4 +1,4 @@
-// 데이터 수집기 (GitHub Actions에서 하루 1회 실행)
+// 데이터 수집기 (GitHub Actions에서 평일 하루 2회 실행)
 // 사용법: node scripts/collect.mjs [--force] [--only=AAPL,005930.KS] [--skip-macro]
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
