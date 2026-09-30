@@ -56,9 +56,12 @@ function appendLog() {
   // 아직 장이 열려 있는 시장(예: 한국시간 19시 실행 때의 유럽)은 종가가 아니므로 기록하지 않음
   const now = new Date(), todayUtc = now.toISOString().slice(0, 10), nowH = now.getUTCHours() + now.getUTCMinutes() / 60;
   const intraday = r => r.asOf === todayUtc && nowH < (MARKETS[r.market]?.closeUtc ?? 21.1);
+  // 자국 대표 지수보다 날짜가 뒤처진 종목(최신 일봉 누락)은 오래된 가격이므로 기록하지 않음
+  const asOfBySym = Object.fromEntries(rows.map(r => [r.symbol, r.asOf]));
+  const stale = r => { const b = asOfBySym[MARKETS[r.market]?.bench]; return r.kind === 'stock' && b && r.asOf < b; };
   const add = [];
   for (const r of rows) for (const h of LOG_H) {
-    if (intraday(r)) continue;
+    if (intraday(r) || stale(r)) continue;
     const k = `${r.asOf},${r.symbol},${h}`, f = r.fc[h];
     if (!f || keys.has(k)) continue;
     add.push([r.asOf, r.symbol, h, r.price, f.exp, f.q05, f.med, f.q95, f.pUp, r.comp[h]].join(','));
