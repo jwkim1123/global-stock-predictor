@@ -38,6 +38,13 @@ async function cached(kind, key, ttlDays, fn) {
   }
 }
 
+// "Samsung Electronics Co., Ltd." → "Samsung Electronics" (뉴스 검색어용)
+function companyQuery(name) {
+  return name
+    .replace(/\b(Co\.?,?\s*Ltd\.?|Co\.|Ltd\.?|Limited|Inc\.?|Corp\.?|Corporation|plc|N\.V\.|S\.A\.|SE|A\/S|AG|Holdings?|Company)(?=\W|$)/gi, '')
+    .replace(/[,.]+/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
 function dedupeNews(list) {
   const seen = new Set();
   return list.filter(n => {
@@ -59,8 +66,8 @@ async function collectStock(e) {
   out.peers = await cached('peers', sym, 14, () => Y.peers(sym)) || [];
   out.news = await cached('news', sym, 0.4, async () => {
     let n = await Y.news(sym, 20).catch(() => []);
-    const nm = out.summary?.price?.shortName || out.meta?.shortName;
-    if (n.length < 6 && nm) n = n.concat(await Y.news(nm.replace(/,? (Inc|Co|Corp|Ltd|Limited|Holdings|plc)\.?$/i, ''), 15).catch(() => []));
+    const nm = companyQuery(out.summary?.price?.longName || out.meta?.longName || '');
+    if (n.length < 6 && nm) n = n.concat(await Y.news(nm, 15).catch(() => []));
     return dedupeNews(n).slice(0, 25);
   }) || [];
   if (e.market === 'US') out.options = await cached('options', sym, 0.4, () => Y.optionsSnapshot(sym));
@@ -87,7 +94,7 @@ async function collectMacro(stocks) {
   const syms = [...new Set([...Object.values(MACRO_SYMBOLS).flat(), ...sectorEtfs, ...themeEtfs])];
   const series = {};
   await pool(syms, 4, async s => {
-    const ch = await cached('macro', s, 0.4, () => Y.chart(s, yearsAgo(6), { full: false }));
+    const ch = await cached('macro', s, 0.4, () => Y.chart(s, yearsAgo(11), { full: false }));
     if (ch) series[s] = ch.prices;
   });
   log(`macro series ${Object.keys(series).length}/${syms.length}`);

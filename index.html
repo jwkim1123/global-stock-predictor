@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>글로벌 주식 예측</title>
+  <meta name="description" content="기업 펀더멘털·산업·거시경제·기술적 분석·수급·심리·이벤트·계량·리스크 9개 요인과 블랙스완 위험을 종합해 전세계 주요 지수와 종목의 주가 분포를 예측합니다.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b0b0b'/%3E%3Cpath d='M6 21l6-6 5 4 9-10' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/style.css">
+  <script>
+    try { const t = localStorage.getItem('theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
+  <script type="module" src="assets/js/app.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="#/" aria-label="홈">
+        <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="currentColor"/><path d="M6 21l6-6 5 4 9-10" fill="none" stroke="var(--page)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>글로벌 주식 예측</span>
+      </a>
+      <nav class="nav" aria-label="주요 메뉴">
+        <a href="#/" data-route="home">대시보드</a>
+        <a href="#/stocks" data-route="stocks">종목 랭킹</a>
+        <a href="#/reports" data-route="reports">분석 리포트</a>
+        <a href="#/track" data-route="track">예측 성적표</a>
+        <a href="#/method" data-route="method">방법론</a>
+      </nav>
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="화면 테마 전환">테마</button>
+    </div>
+  </header>
+  <main id="app" class="wrap" tabindex="-1">
+    <div class="skeleton">데이터를 불러오는 중…</div>
+  </main>
+  <footer class="site-footer">
+    <div class="wrap">
+      <p><b>투자 유의:</b> 이 사이트의 모든 예측은 통계 모델이 만든 확률적 추정이며 투자 권유가 아닙니다. 주가는 예측할 수 없는 사건에 크게 좌우되며, 과거 성과가 미래 수익을 보장하지 않습니다.</p>
+      <p>데이터: Yahoo Finance(시세·재무·뉴스·옵션), FRED(미국 경제지표), 네이버 증권(국내 투자자별 매매). 평일 하루 1회 GitHub Actions로 자동 갱신. <span id="updated"></span></p>
+    </div>
+  </footer>
+</body>
+</html>
